@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Gravity Ball Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Anti-Gravity 球球遊戲</h1>
+    <p class="tip">點擊畫面讓球反重力彈起！</p>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
+# Anti-Gravity 小球遊戲
+
+一款使用 **HTML / CSS / JavaScript** 製作的前端小遊戲。
+
+玩家可以點擊畫面讓球瞬間反重力彈起，模擬 Google Antigravity 效果。  
+此專案符合課堂期末專題需求，並可使用 GitHub + Vercel 完整部署。
+
+---
+
+## 🕹 遊戲玩法
+- 點擊畫面 → 球會向上彈起
+- 放開 → 球會因重力自然落下
+- 不斷點擊可讓球持續漂浮
+
+---
+
+## 🧰 技術
+- HTML5 Canvas
+- JavaScript 遊戲迴圈
+- CSS 基礎版面
+
+---
+
+## 🚀 部署方式（Vercel）
+1. 將專案上傳到 GitHub
+2. 到 https://vercel.com
+3. Import Project → 選擇你的 GitHub Repository
+4. Deploy
+5. 完成！
+
+---
+
+## ✨ 作者
+劉凱佑（k liu）  
+僑光科技大學資訊科技系（預計）
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+// 設定畫面大小
+canvas.width = 400;
+canvas.height = 600;
+
+// 球物件
+let ball = {
+    x: canvas.width / 2,
+    y: canvas.height - 30,
+    radius: 20,
+    dy: 0,
+    gravity: 0.4,
+    boost: -10, // 點擊後的反重力加速度
+};
+
+// 監聽點擊事件
+canvas.addEventListener("click", () => {
+    ball.dy = ball.boost;
+});
+
+// 遊戲主迴圈
+function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 重力
+    ball.dy += ball.gravity;
+    ball.y += ball.dy;
+
+    // 碰到底反彈
+    if (ball.y + ball.radius > canvas.height) {
+        ball.y = canvas.height - ball.radius;
+        ball.dy *= -0.6;
+    }
+
+    // 畫球
+    ctx.beginPath();
+    const gradient = ctx.createRadialGradient(ball.x, ball.y, 5, ball.x, ball.y, ball.radius);
+    gradient.addColorStop(0, "#fffa");
+    gradient.addColorStop(1, "#f39c12");
+    ctx.fillStyle = gradient;
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    requestAnimationFrame(update);
+}
+
+update();
+body {
+    margin: 0;
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 20px;
+}
+
+.tip {
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+#gameCanvas {
+    display: block;
+    margin: 0 auto;
+    background: #222;
+    border: 2px solid #444;
+    border-radius: 10px;
+}
